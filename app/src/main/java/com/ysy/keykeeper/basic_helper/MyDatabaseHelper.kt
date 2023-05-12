@@ -50,6 +50,11 @@ class MyDatabaseHelper(val context: Context) :
         return db.query(DATABASE_TABLE_NAME, null, "url=?", arrayOf(url), null, null, null)
     }
 
+    fun readDbAtAccount(url: String, account: String) : Cursor {
+        val db = this.readableDatabase
+        return db.query(DATABASE_TABLE_NAME, null, "url=? and account=?", arrayOf(url, account), null, null, null)
+    }
+
     /**
      * 增
      */

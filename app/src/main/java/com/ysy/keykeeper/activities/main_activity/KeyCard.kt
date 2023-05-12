@@ -17,6 +17,7 @@ import com.ysy.keykeeper.basic_helper.MyDatabaseHelper
 import jp.wasabeef.blurry.Blurry
 
 const val EXTRA_URL = "com.ysy.KeyKeeper.URL"
+const val EXTRA_ACCOUNT = "com.ysy.KeyKeeper.ACCOUNTL"
 
 class KeyCard (context:Context) : LinearLayout(context) {
 
@@ -49,6 +50,7 @@ class KeyCard (context:Context) : LinearLayout(context) {
         //
         val intent = Intent(this.context, ShowAccountInfoActivity::class.java).apply {
             putExtra(EXTRA_URL, url)
+            putExtra(EXTRA_ACCOUNT, account)
         }
         this.context.startActivity(intent)
     }

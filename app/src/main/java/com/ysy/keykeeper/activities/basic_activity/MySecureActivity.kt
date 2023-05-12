@@ -1,9 +1,11 @@
 package com.ysy.keykeeper.activities.basic_activity
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
@@ -12,9 +14,7 @@ import java.util.concurrent.Executor
 open abstract class MySecureActivity : AppCompatActivity() {
 
     // 生物验证相关
-    lateinit var executor: Executor
-    lateinit var biometricPrompt: BiometricPrompt
-    lateinit var promptInfo: BiometricPrompt.PromptInfo
+    val myBiometricProtector = MyBiometricProtector()
 
     // app前后台状态相关
     object appState {
@@ -28,7 +28,7 @@ open abstract class MySecureActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // 内置生物验证
-        generateBiometricProtector()
+        myBiometricProtector.generateBiometricProtector()
 
         myOnCreate()
     }
@@ -50,7 +50,7 @@ open abstract class MySecureActivity : AppCompatActivity() {
             // 页面高斯模糊
             blurryProcess()
 
-            activateProtector()
+            myBiometricProtector.activateProtector()
         }
 
         myOnStart()
@@ -78,45 +78,7 @@ open abstract class MySecureActivity : AppCompatActivity() {
     /**
      * 初始化生物信息验证
      */
-    fun generateBiometricProtector() {
-        executor = ContextCompat.getMainExecutor(this)
-        biometricPrompt = BiometricPrompt(this, executor,
-            object : BiometricPrompt.AuthenticationCallback() {
-                override fun onAuthenticationError( errorCode: Int, errString: CharSequence ) {
-                    super.onAuthenticationError(errorCode, errString)
 
-                    if ( errorCode == BiometricPrompt.ERROR_USER_CANCELED || errorCode == BiometricPrompt.ERROR_CANCELED || errorCode == BiometricPrompt.ERROR_TIMEOUT) {
-                        activateProtector()
-                    } else if ( errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON ) {
-                        // 退出
-
-                    } else {
-                        Toast.makeText(applicationContext, "Error: $errString", Toast.LENGTH_SHORT).show()
-                    }
-
-                }
-
-                override fun onAuthenticationSucceeded ( result: BiometricPrompt.AuthenticationResult ) {
-                    super.onAuthenticationSucceeded(result)
-                    Toast.makeText(applicationContext, "验证成功!", Toast.LENGTH_SHORT).show()
-                    appState.resumed = false // app状态更新
-                    blurryDissolve() // 解除高斯模糊
-                    passAuthentication() // 调用通过验证函数
-                }
-
-                override fun onAuthenticationFailed() {
-                    super.onAuthenticationFailed()
-                    Toast.makeText(applicationContext, "验证失败", Toast.LENGTH_SHORT).show()
-                }
-            } )
-
-        promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("KeyKeeper生物识别保护")
-            .setSubtitle("验证您的指纹以进入KeyKeeper")
-            .setAllowedAuthenticators(BIOMETRIC_STRONG)
-            .setNegativeButtonText("退出")
-            .build()
-    }
 
     /**
      * 验证通过后调用
@@ -126,9 +88,57 @@ open abstract class MySecureActivity : AppCompatActivity() {
     /**
      * 激活生物验证
      */
-    fun activateProtector() {
-        Log.i("BiometricProtector: ", "指纹验证")
-        biometricPrompt.authenticate(promptInfo)
+
+    inner class MyBiometricProtector {
+
+        lateinit var executor: Executor
+        lateinit var biometricPrompt: BiometricPrompt
+        lateinit var promptInfo: BiometricPrompt.PromptInfo
+
+        fun generateBiometricProtector() {
+            executor = ContextCompat.getMainExecutor(this@MySecureActivity)
+            biometricPrompt = BiometricPrompt(this@MySecureActivity, executor,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError( errorCode: Int, errString: CharSequence ) {
+                        super.onAuthenticationError(errorCode, errString)
+
+                        if ( errorCode == BiometricPrompt.ERROR_USER_CANCELED || errorCode == BiometricPrompt.ERROR_CANCELED || errorCode == BiometricPrompt.ERROR_TIMEOUT) {
+                            activateProtector()
+                        } else if ( errorCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON ) {
+                            // 退出
+
+                        } else {
+                            Toast.makeText(this@MySecureActivity, "Error: $errString", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
+                    override fun onAuthenticationSucceeded ( result: BiometricPrompt.AuthenticationResult ) {
+                        super.onAuthenticationSucceeded(result)
+                        Toast.makeText(this@MySecureActivity, "验证成功!", Toast.LENGTH_SHORT).show()
+                        MySecureActivity.appState.resumed = false // app状态更新
+                        blurryDissolve() // 解除高斯模糊
+                        passAuthentication() // 调用通过验证函数
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Toast.makeText(this@MySecureActivity, "验证失败", Toast.LENGTH_SHORT).show()
+                    }
+                } )
+
+            promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("KeyKeeper生物识别保护")
+                .setSubtitle("验证您的指纹以进入KeyKeeper")
+                .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_STRONG)
+                .setNegativeButtonText("退出")
+                .build()
+        }
+
+        fun activateProtector() {
+            Log.i("BiometricProtector: ", "指纹验证")
+            biometricPrompt.authenticate(promptInfo)
+        }
     }
 
 }
