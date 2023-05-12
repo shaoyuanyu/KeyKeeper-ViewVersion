@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">KeyKeeper</string>
+    <string name="title_activity_main">KeyKeeper</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_ls">lsActivity</string>
+
+    <string name="accessibility_service_label">KeyKeeper</string>
+    <string name="accessibility_service_description">
+        🐳🐳🐳\n
+        -----------\n
+        功能：开启本服务后，您将可以在任意【app/网页】进行【注册/登录】时使用KeyKeeper😊\n
+        -----------\n
+        隐私：开启本服务后，KeyKeeper将会在您打开系统下拉栏【控制中心】中的开关（与Wifi开关等在一起）后，收集您屏幕上的信息（仅限输入框）\n
+        -----------\n
+        安全：本服务不会收集除【您录入】的账号密码外的其他【任何】个人信息，【不需要】也【不申请】联网权限，因此不存在泄露风险😊\n
+        -----------\n
+        ❤💕【重要】使用说明：\n
+        （略复杂，现在不看恐成消愁🤣👉🤡）\n
+        \t\t\t\t1) 开启无障碍权限后，在系统【下拉栏】的【开关列表】（Wifi、蓝牙等）中点击【添加开关】，找到【KeyKeeper】并添加\n
+        \t\t\t\t2) 每次使用密码填充功能前打开该开关，点击app登录界面的【输入账号】一栏，KeyKeeper将会自动呈现您保存的账号（可能存在多个）供您选择\n
+        \t\t\t\t3) 选择完成后KeyKeeper会自动为您填充账号，此时需要您点击app登录界面的【输入密码】一栏，从而完成自动填充密码\n
+        \t\t\t\t4) 使用完成后关闭该开关以减少后台占用和误识别\n
+        -----------\n
+        开发者名单：ysy\n
+        -----------\n
+        😎😎😎\n
+    </string>
+
+    <string name="update_log">
+        2.0版本为测试版向稳定版过渡的重要一代\n\n
+        本次更新主要包括以下几个方面：\n
+        \t\t\t\t1)完善密码自动填充流程\n
+        \t\t\t\t2)完善无障碍设置相关引导\n
+        \t\t\t\t3)更新数据库结构及有关代码，以支持同app多账号的存储及安全保护\n
+        \t\t\t\t4)新增对同应用多账号的密码自动填充的支持\n
+        \t\t\t\t5)优化activity释放，从而优化操作逻辑和内存占用\n
+        \t\t\t\t6)项目结构变更
+    </string>
+</resources>
